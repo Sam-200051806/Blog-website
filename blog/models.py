@@ -23,12 +23,14 @@ class Author(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=100)
     excerpt = models.CharField(max_length=300)
-    image_name = models.CharField(max_length=100)
+    # image_name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to="posts",null=True)
     date = models.DateField(auto_now=True)
     slug = models.SlugField(unique=True)
     content = models.TextField() 
     author = models.ForeignKey(Author,on_delete=models.SET_NULL,related_name="posts",null=True)
     tag  = models.ManyToManyField(Tag)
+
     def full_name(self):
         return f"{self.title}"
         # return 
@@ -36,3 +38,23 @@ class Post(models.Model):
     def __str__(self):
         return self.full_name()
 
+class Comments(models.Model):
+    user_name = models.CharField(max_length=200)
+    user_email = models.EmailField()
+    text = models.TextField(max_length=400)
+    posts = models.ForeignKey(Post,on_delete=models.CASCADE,related_name="comments")
+    def full_name(self):
+        return f"{self.user_name} {self.user_email} {self.text} {self.posts}"
+        # return 
+    
+    def __str__(self):
+        return self.full_name()
+    
+class Comm(models.Model):
+    user_name = models.CharField(max_length=100)
+    def full_name(self):
+        return f"{self.user_name} "
+        # return 
+    
+    def __str__(self):
+        return self.full_name()
